@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from 'next/link';
 import HeaderClient from "@/components/HeaderClient";
 
 const geistSans = Geist({
@@ -30,7 +31,7 @@ export default function RootLayout({
       >
         <header className="border-b">
           <div className="max-w-5xl mx-auto flex items-center justify-between p-4">
-            <a href="/" className="font-semibold">SocialConnect</a>
+            <Link href="/" className="font-semibold">SocialConnect</Link>
             <nav className="space-x-4 text-sm">
               <HeaderClient />
             </nav>
