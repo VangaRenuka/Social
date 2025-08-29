@@ -30,17 +30,15 @@ export default function AdminPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const token = typeof window !== 'undefined' ? getAccessToken() || '' : '';
 
-  useEffect(() => {
+
+  // Make load reusable
+  const load = async () => {
     const me = getCurrentUser();
     if (!me || me.role !== 'admin') {
       window.location.href = '/';
       return;
     }
     setAllowed(true);
-    load();
-  }, []);
-
-  async function load() {
     const [{ results: u }, { results: p }, s] = await Promise.all([
       apiJson('/api/admin/users?page=1', 'GET', undefined, token),
       apiJson('/api/admin/posts?page=1', 'GET', undefined, token),
@@ -48,8 +46,12 @@ export default function AdminPage() {
     ]);
     setUsers(u || []);
     setPosts(p || []);
-    setStats(s || {});
-  }
+    setStats(s || null);
+  };
+
+  useEffect(() => {
+    load();
+  }, [token]);
 
   async function deactivate(userId: string) {
     await apiJson(`/api/admin/users/${userId}/deactivate`, 'POST', {}, token);
