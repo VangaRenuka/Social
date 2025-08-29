@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { apiJson } from '@/lib/api';
 
 export default function ProfilePage() {
@@ -30,7 +31,10 @@ export default function ProfilePage() {
     }
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [load]);
 
   return (
     <div className="p-6 space-y-4">
@@ -42,7 +46,7 @@ export default function ProfilePage() {
         {message && <p className="text-sm text-gray-600">{message}</p>}
       </div>
       {typeof profile?.avatar_url === 'string' && profile.avatar_url && (
-        <img src={profile.avatar_url} alt="avatar" className="w-24 h-24 rounded-full" />
+        <Image src={profile.avatar_url} alt="avatar" className="w-24 h-24 rounded-full" width={96} height={96} />
       )}
     </div>
   );

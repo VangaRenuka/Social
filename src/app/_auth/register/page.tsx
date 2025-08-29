@@ -11,7 +11,7 @@ export default function RegisterPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-      const res = await apiJson('/api/auth/register', 'POST', { email, username, password });
+      await apiJson('/api/auth/register', 'POST', { email, username, password });
       setMessage('Registered. Please verify email (token returned via API placeholder).');
     } catch (e: unknown) {
       if (e && typeof e === 'object' && 'message' in e) {

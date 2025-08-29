@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { apiJson } from '@/lib/api';
 
 type Post = { id: string; content: string; image_url?: string | null; created_at: string };
@@ -42,7 +43,8 @@ export default function FeedPage() {
 
   useEffect(() => {
     load();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [load]);
 
   return (
     <main className="max-w-xl mx-auto p-6 space-y-4">
@@ -57,7 +59,9 @@ export default function FeedPage() {
           <li key={p.id} className="border p-3">
             <div className="text-sm text-gray-500">{new Date(p.created_at).toLocaleString()}</div>
             <div>{p.content}</div>
-            {p.image_url && <img src={p.image_url} alt="post" className="mt-2 max-h-64 object-contain" />}
+            {p.image_url && (
+              <Image src={p.image_url} alt="post" className="mt-2 max-h-64 object-contain" width={500} height={300} />
+            )}
           </li>
         ))}
       </ul>
