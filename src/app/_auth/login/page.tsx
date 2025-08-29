@@ -15,8 +15,12 @@ export default function LoginPage() {
       setSession({ access_token: res.access_token, refresh_token: res.refresh_token }, res.user);
       setMessage('Logged in. Redirecting to feed...');
       window.location.href = '/feed';
-    } catch (e: any) {
-      setMessage(e.message);
+    } catch (e: unknown) {
+      if (e && typeof e === 'object' && 'message' in e) {
+        setMessage((e as Error).message);
+      } else {
+        setMessage('An error occurred');
+      }
     }
   }
 

@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { apiJson } from '@/lib/api';
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<any>(null);
+  type Profile = { avatar_url?: string; bio?: string; [key: string]: unknown };
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [bio, setBio] = useState('');
   const [message, setMessage] = useState('');
   const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') || '' : '';
@@ -20,8 +21,12 @@ export default function ProfilePage() {
       const updated = await apiJson('/api/users/me', 'PUT', { bio }, token);
       setProfile(updated);
       setMessage('Saved');
-    } catch (e: any) {
-      setMessage(e.message);
+    } catch (e: unknown) {
+      if (e && typeof e === 'object' && 'message' in e) {
+        setMessage((e as Error).message);
+      } else {
+        setMessage('An error occurred');
+      }
     }
   }
 
@@ -36,7 +41,9 @@ export default function ProfilePage() {
         <button className="bg-emerald-600 text-white px-4 py-2" onClick={save}>Save</button>
         {message && <p className="text-sm text-gray-600">{message}</p>}
       </div>
-      {profile?.avatar_url && <img src={profile.avatar_url} alt="avatar" className="w-24 h-24 rounded-full" />}
+      {typeof profile?.avatar_url === 'string' && profile.avatar_url && (
+        <img src={profile.avatar_url} alt="avatar" className="w-24 h-24 rounded-full" />
+      )}
     </div>
   );
 }

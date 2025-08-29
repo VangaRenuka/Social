@@ -15,7 +15,7 @@ export function getCurrentUser(): { id: string; username?: string; role?: string
   try { return JSON.parse(raw); } catch { return null; }
 }
 
-export function setSession(tokens: { access_token: string; refresh_token: string }, user: any) {
+export function setSession(tokens: { access_token: string; refresh_token: string }, user: { id: string; [key: string]: unknown }) {
   if (typeof window === 'undefined') return;
   localStorage.setItem('access_token', tokens.access_token);
   localStorage.setItem('refresh_token', tokens.refresh_token);

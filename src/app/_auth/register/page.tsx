@@ -13,8 +13,12 @@ export default function RegisterPage() {
     try {
       const res = await apiJson('/api/auth/register', 'POST', { email, username, password });
       setMessage('Registered. Please verify email (token returned via API placeholder).');
-    } catch (e: any) {
-      setMessage(e.message);
+    } catch (e: unknown) {
+      if (e && typeof e === 'object' && 'message' in e) {
+        setMessage((e as Error).message);
+      } else {
+        setMessage('An error occurred');
+      }
     }
   }
 

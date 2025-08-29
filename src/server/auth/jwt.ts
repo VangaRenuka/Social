@@ -8,7 +8,7 @@ export type JwtPayload = {
 };
 
 export async function signAccessToken(payload: JwtPayload, expiresIn = '15m') {
-  return await new SignJWT(payload as any)
+  return await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(expiresIn)
@@ -16,14 +16,14 @@ export async function signAccessToken(payload: JwtPayload, expiresIn = '15m') {
 }
 
 export async function signRefreshToken(payload: JwtPayload, expiresIn = '7d') {
-  return await new SignJWT({ ...payload, typ: 'refresh' } as any)
+  return await new SignJWT({ ...payload, typ: 'refresh' })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(expiresIn)
     .sign(getSecret());
 }
 
-export async function verifyToken<T = any>(token: string): Promise<T> {
+export async function verifyToken<T = Record<string, unknown>>(token: string): Promise<T> {
   const { payload } = await jwtVerify(token, getSecret());
   return payload as T;
 }

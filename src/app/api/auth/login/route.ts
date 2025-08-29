@@ -42,8 +42,8 @@ export async function POST(req: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (err: any) {
-    return Response.json({ error: 'Server error', details: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    return Response.json({ error: 'Server error', details: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 });
   }
 }
 

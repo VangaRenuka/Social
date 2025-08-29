@@ -37,8 +37,8 @@ export async function POST(req: NextRequest) {
 
     // TODO: create email verification token and send email via Supabase Functions or external service
     return Response.json({ id: user.id, email: user.email, username: user.username }, { status: 201 });
-  } catch (err: any) {
-    return Response.json({ error: 'Server error', details: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    return Response.json({ error: 'Server error', details: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 });
   }
 }
 

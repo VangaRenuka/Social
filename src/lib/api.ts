@@ -1,4 +1,4 @@
-export async function apiJson(path: string, method: string, body?: any, token?: string) {
+export async function apiJson(path: string, method: string, body?: Record<string, unknown>, token?: string) {
   const res = await fetch(path, {
     method,
     headers: {

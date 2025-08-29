@@ -22,7 +22,7 @@ export async function listFollowers(userId: string, limit = 20, offset = 0) {
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
   if (error) throw error;
-  return data?.map((r: any) => r.follower) as string[];
+  return data?.map((r: { follower: string }) => r.follower) as string[];
 }
 
 export async function listFollowing(userId: string, limit = 20, offset = 0) {
@@ -34,7 +34,7 @@ export async function listFollowing(userId: string, limit = 20, offset = 0) {
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
   if (error) throw error;
-  return data?.map((r: any) => r.following) as string[];
+  return data?.map((r: { following: string }) => r.following) as string[];
 }
 
 

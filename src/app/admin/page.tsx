@@ -1,13 +1,33 @@
 "use client";
 import { useEffect, useState } from 'react';
+
 import { getAccessToken, getCurrentUser } from '@/lib/auth';
 import { apiJson } from '@/lib/api';
 
+type User = {
+  id: string;
+  email: string;
+  username: string;
+  role: string;
+  is_active: boolean;
+};
+type Post = {
+  id: string;
+  content: string;
+  like_count: number;
+  comment_count: number;
+};
+type Stats = {
+  total_users: number;
+  total_posts: number;
+  active_today: number;
+};
+
 export default function AdminPage() {
   const [allowed, setAllowed] = useState(false);
-  const [users, setUsers] = useState<any[]>([]);
-  const [posts, setPosts] = useState<any[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [stats, setStats] = useState<Stats | null>(null);
   const token = typeof window !== 'undefined' ? getAccessToken() || '' : '';
 
   useEffect(() => {
@@ -47,7 +67,7 @@ export default function AdminPage() {
       <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
       <section>
         <h2 className="font-semibold mb-2">Stats</h2>
-        <div className="text-sm text-gray-700">Users: {stats?.total_users} · Posts: {stats?.total_posts} · Active today: {stats?.active_today}</div>
+  <div className="text-sm text-gray-700">Users: {stats?.total_users ?? 0} · Posts: {stats?.total_posts ?? 0} · Active today: {stats?.active_today ?? 0}</div>
       </section>
       <section>
         <h2 className="font-semibold mb-2">Users</h2>
@@ -91,7 +111,7 @@ export default function AdminPage() {
           <tbody>
             {posts.map(p => (
               <tr key={p.id} className="border-t">
-                <td className="p-2">{p.id.slice(0,8)}…</td>
+                <td className="p-2">{typeof p.id === 'string' ? p.id.slice(0,8) : ''}…</td>
                 <td className="p-2">{p.content}</td>
                 <td className="p-2 text-center">{p.like_count}</td>
                 <td className="p-2 text-center">{p.comment_count}</td>

@@ -8,7 +8,7 @@ export async function getFeedForUser(userId: string, limit = 20, offset = 0) {
     .select('following')
     .eq('follower', userId);
   if (errF) throw errF;
-  const followingIds = (following || []).map((r: any) => r.following);
+  const followingIds = (following || []).map((r: { following: string }) => r.following);
   followingIds.push(userId); // include self
 
   const { data, error } = await supa

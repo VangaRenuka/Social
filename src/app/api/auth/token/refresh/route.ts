@@ -10,14 +10,14 @@ export async function POST(req: NextRequest) {
     const parsed = schema.safeParse(body);
     if (!parsed.success) return Response.json({ error: 'Invalid input' }, { status: 400 });
 
-    const payload = await verifyToken<any>(parsed.data.refresh_token);
+  const payload = await verifyToken<{ sub: string; role: string; typ?: string }>(parsed.data.refresh_token);
     if (payload?.typ !== 'refresh') {
       return Response.json({ error: 'Invalid token type' }, { status: 401 });
     }
-    const access = await signAccessToken({ sub: payload.sub, role: payload.role });
-    const refresh = await signRefreshToken({ sub: payload.sub, role: payload.role });
+  const access = await signAccessToken({ sub: payload.sub, role: payload.role as 'user' | 'admin' });
+  const refresh = await signRefreshToken({ sub: payload.sub, role: payload.role as 'user' | 'admin' });
     return Response.json({ access_token: access, refresh_token: refresh }, { status: 200 });
-  } catch (err: any) {
+  } catch (err: unknown) {
     return Response.json({ error: 'Invalid or expired token' }, { status: 401 });
   }
 }

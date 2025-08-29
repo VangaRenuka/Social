@@ -16,8 +16,12 @@ export default function FeedPage() {
       const res = await fetch('/api/feed', { headers: token ? { Authorization: `Bearer ${token}` } : {} });
       const data = await res.json();
       setPosts(data.results || []);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      if (e && typeof e === 'object' && 'message' in e) {
+        setError((e as Error).message);
+      } else {
+        setError('An error occurred');
+      }
     }
   }
 
@@ -27,8 +31,12 @@ export default function FeedPage() {
       const post = await apiJson('/api/posts', 'POST', { content }, token);
       setContent('');
       setPosts([post, ...posts]);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      if (e && typeof e === 'object' && 'message' in e) {
+        setError((e as Error).message);
+      } else {
+        setError('An error occurred');
+      }
     }
   }
 
