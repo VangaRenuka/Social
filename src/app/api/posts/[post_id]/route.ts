@@ -1,3 +1,4 @@
+
 import { NextRequest } from 'next/server';
 import { requireAuth } from '@/server/auth/session';
 import { getPostById, updatePost, deletePost } from '@/server/db/queries/posts';
@@ -22,10 +23,13 @@ export async function PUT(req: NextRequest, { params }: { params: { post_id: str
 
 export const PATCH = PUT;
 
-export async function DELETE(_req: NextRequest, { params }: { params: { post_id: string } }) {
+export async function DELETE(req: NextRequest) {
+  const url = new URL(req.url);
+  const post_id = url.pathname.split('/').pop();
   const auth = await requireAuth();
   if (auth instanceof Response) return auth;
-  await deletePost(params.post_id, auth.userId);
+  if (!post_id) return Response.json({ error: 'Missing post_id' }, { status: 400 });
+  await deletePost(post_id, auth.userId);
   return Response.json({ success: true }, { status: 200 });
 }
 

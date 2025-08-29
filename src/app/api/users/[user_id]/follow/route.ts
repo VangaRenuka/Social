@@ -12,10 +12,13 @@ export async function POST(_req: Request, { params }: { params: { user_id: strin
   return Response.json({ success: true }, { status: 200 });
 }
 
-export async function DELETE(_req: Request, { params }: { params: { user_id: string } }) {
+export async function DELETE(req: Request) {
+  const url = new URL(req.url);
+  const user_id = url.pathname.split('/').pop();
   const auth = await requireAuth();
   if (auth instanceof Response) return auth;
-  await unfollowUser(auth.userId, params.user_id);
+  if (!user_id) return Response.json({ error: 'Missing user_id' }, { status: 400 });
+  await unfollowUser(auth.userId, user_id);
   return Response.json({ success: true }, { status: 200 });
 }
 
