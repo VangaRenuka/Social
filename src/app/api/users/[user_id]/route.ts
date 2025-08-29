@@ -6,8 +6,8 @@ export async function GET(_req: NextRequest, { params }: { params: { user_id: st
     const profile = await getProfileByUserId(params.user_id);
     if (!profile) return Response.json({ error: 'Not found' }, { status: 404 });
     return Response.json(profile, { status: 200 });
-  } catch (e: any) {
-    return Response.json({ error: 'Server error', details: e.message }, { status: 500 });
+  } catch (e: unknown) {
+    return Response.json({ error: 'Server error', details: e instanceof Error ? e.message : 'Unknown error' }, { status: 500 });
   }
 }
 

@@ -16,7 +16,7 @@ export async function PUT(req: NextRequest, { params }: { params: { post_id: str
   const body = await req.json();
   const parsed = schema.safeParse(body);
   if (!parsed.success) return Response.json({ error: 'Invalid input' }, { status: 400 });
-  const updated = await updatePost(params.post_id, auth.userId, parsed.data as any);
+  const updated = await updatePost(params.post_id, auth.userId, parsed.data as Record<string, unknown>);
   return Response.json(updated, { status: 200 });
 }
 
