@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import { getAccessToken, getCurrentUser } from '@/lib/auth';
 import { apiJson } from '@/lib/api';
@@ -39,19 +39,20 @@ export default function AdminPage() {
       return;
     }
     setAllowed(true);
-    const [{ results: u }, { results: p }, s] = await Promise.all([
-      apiJson('/api/admin/users?page=1', 'GET', undefined, token),
-      apiJson('/api/admin/posts?page=1', 'GET', undefined, token),
-      apiJson('/api/admin/stats', 'GET', undefined, token),
-    ]);
-    setUsers(u || []);
-    setPosts(p || []);
-    setStats(s || null);
-  };
+    const load = useCallback(async () => {
+      const [{ results: u }, { results: p }, s] = await Promise.all([
+        apiJson('/api/admin/users?page=1', 'GET', undefined, token),
+        apiJson('/api/admin/posts?page=1', 'GET', undefined, token),
+        apiJson('/api/admin/stats', 'GET', undefined, token),
+      ]);
+      setUsers(u || []);
+      setPosts(p || []);
+      setStats(s || null);
+    }, [token]);
 
-  useEffect(() => {
-    load();
-  }, [token]);
+    useEffect(() => {
+      load();
+    }, [load]);
 
   async function deactivate(userId: string) {
     await apiJson(`/api/admin/users/${userId}/deactivate`, 'POST', {}, token);
