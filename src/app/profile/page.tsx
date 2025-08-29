@@ -10,12 +10,6 @@ export default function ProfilePage() {
   const [message, setMessage] = useState('');
   const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') || '' : '';
 
-  async function load() {
-    const res = await fetch('/api/users/me', { headers: token ? { Authorization: `Bearer ${token}` } : {} });
-    const data = await res.json();
-    setProfile(data);
-    setBio(data?.bio || '');
-  }
 
   async function save() {
     try {
@@ -32,9 +26,14 @@ export default function ProfilePage() {
   }
 
   useEffect(() => {
+    async function load() {
+      const res = await fetch('/api/users/me', { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+      const data = await res.json();
+      setProfile(data);
+      setBio(data?.bio || '');
+    }
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [load]);
+  }, [token]);
 
   return (
     <div className="p-6 space-y-4">

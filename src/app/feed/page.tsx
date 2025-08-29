@@ -12,19 +12,7 @@ export default function FeedPage() {
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') || '' : '';
 
-  async function load() {
-    try {
-      const res = await fetch('/api/feed', { headers: token ? { Authorization: `Bearer ${token}` } : {} });
-      const data = await res.json();
-      setPosts(data.results || []);
-    } catch (e: unknown) {
-      if (e && typeof e === 'object' && 'message' in e) {
-        setError((e as Error).message);
-      } else {
-        setError('An error occurred');
-      }
-    }
-  }
+  // moved load inside useEffect
 
   async function createPost() {
     setError('');
@@ -42,9 +30,21 @@ export default function FeedPage() {
   }
 
   useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch('/api/feed', { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+        const data = await res.json();
+        setPosts(data.results || []);
+      } catch (e: unknown) {
+        if (e && typeof e === 'object' && 'message' in e) {
+          setError((e as Error).message);
+        } else {
+          setError('An error occurred');
+        }
+      }
+    }
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [load]);
+  }, [token]);
 
   return (
     <main className="max-w-xl mx-auto p-6 space-y-4">

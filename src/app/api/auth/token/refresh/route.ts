@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   const access = await signAccessToken({ sub: payload.sub, role: payload.role as 'user' | 'admin' });
   const refresh = await signRefreshToken({ sub: payload.sub, role: payload.role as 'user' | 'admin' });
     return Response.json({ access_token: access, refresh_token: refresh }, { status: 200 });
-  } catch (err: unknown) {
+  } catch {
     return Response.json({ error: 'Invalid or expired token' }, { status: 401 });
   }
 }
